@@ -28,6 +28,95 @@ let showShortlistOnly = false;
 
 
 // =========================================================
+// THEME
+// =========================================================
+
+function loadTheme() {
+
+    const savedTheme =
+        localStorage.getItem(
+            "cricket26_theme"
+        );
+
+
+    const button =
+        document.querySelector(
+            "#themeToggle"
+        );
+
+
+    if (savedTheme === "light") {
+
+        document.body.classList.add(
+            "light-mode"
+        );
+
+
+        if (button) {
+
+            button.textContent = "🌙";
+
+            button.title =
+                "Switch to dark mode";
+        }
+
+    } else {
+
+        document.body.classList.remove(
+            "light-mode"
+        );
+
+
+        if (button) {
+
+            button.textContent = "☀️";
+
+            button.title =
+                "Switch to light mode";
+        }
+    }
+}
+
+
+function toggleTheme() {
+
+    const isLight =
+        document.body.classList.contains(
+            "light-mode"
+        );
+
+
+    if (isLight) {
+
+        document.body.classList.remove(
+            "light-mode"
+        );
+
+
+        localStorage.setItem(
+            "cricket26_theme",
+            "dark"
+        );
+
+    } else {
+
+        document.body.classList.add(
+            "light-mode"
+        );
+
+
+        localStorage.setItem(
+            "cricket26_theme",
+            "light"
+        );
+    }
+
+
+    loadTheme();
+}
+
+
+// =========================================================
 // CSV PARSER
 // =========================================================
 
@@ -49,7 +138,6 @@ function parseCSV(text) {
         const next = text[i + 1];
 
 
-        // Escaped quote
         if (
             char === '"' &&
             insideQuotes &&
@@ -62,14 +150,12 @@ function parseCSV(text) {
 
         }
 
-        // Start / end quote
         else if (char === '"') {
 
             insideQuotes = !insideQuotes;
 
         }
 
-        // Column separator
         else if (
             char === "," &&
             !insideQuotes
@@ -81,7 +167,6 @@ function parseCSV(text) {
 
         }
 
-        // New line
         else if (
             (char === "\n" || char === "\r") &&
             !insideQuotes
@@ -122,7 +207,6 @@ function parseCSV(text) {
     }
 
 
-    // Last row
     if (
         value !== "" ||
         row.length > 0
@@ -174,23 +258,6 @@ async function loadPlayers() {
             parseCSV(text);
 
 
-        /*
-            Your CSV structure is:
-
-            Row 1:
-            Player,,,,,,,,Diggsy,...
-
-            Row 2:
-            Budget,,,,,,,,100,...
-
-            Row 3:
-            Player Name,Bat Hand,...
-
-            Row 4+:
-            Actual players
-        */
-
-
         if (rows.length < 4) {
 
             throw new Error(
@@ -199,7 +266,6 @@ async function loadPlayers() {
         }
 
 
-        // Row 3 = player headers
         const headerRow = rows[2];
 
 
@@ -209,7 +275,6 @@ async function loadPlayers() {
         );
 
 
-        // Rows 4+ = players
         players = rows
             .slice(3)
             .map((row, index) => {
@@ -375,10 +440,6 @@ function toggleShortlist(playerId) {
         );
 
 
-    // -----------------------------------------------------
-    // REMOVE
-    // -----------------------------------------------------
-
     if (alreadySelected) {
 
         shortlist =
@@ -395,10 +456,6 @@ function toggleShortlist(playerId) {
     }
 
 
-    // -----------------------------------------------------
-    // FIND PLAYER
-    // -----------------------------------------------------
-
     const player =
         players.find(
             p => p.id === playerId
@@ -410,10 +467,6 @@ function toggleShortlist(playerId) {
         return;
     }
 
-
-    // -----------------------------------------------------
-    // MAX 20 PLAYERS
-    // -----------------------------------------------------
 
     if (
         shortlist.length >=
@@ -427,10 +480,6 @@ function toggleShortlist(playerId) {
         return;
     }
 
-
-    // -----------------------------------------------------
-    // MAX 100 CR
-    // -----------------------------------------------------
 
     const currentBudget =
         getTotalPrice();
@@ -462,10 +511,6 @@ function toggleShortlist(playerId) {
     }
 
 
-    // -----------------------------------------------------
-    // MAX 3 FROM COUNTRY
-    // -----------------------------------------------------
-
     const countryCount =
         getCountryCount(
             player.country
@@ -488,10 +533,6 @@ function toggleShortlist(playerId) {
         return;
     }
 
-
-    // -----------------------------------------------------
-    // ADD PLAYER
-    // -----------------------------------------------------
 
     shortlist.push(
         playerId
@@ -609,10 +650,6 @@ function getFilteredPlayers() {
             }
         );
 
-
-    // =====================================================
-    // SORT
-    // =====================================================
 
     result.sort(
         (a, b) => {
@@ -837,7 +874,6 @@ function getSquadStatus() {
         shortlist.length;
 
 
-    // Less than 16
     if (
         count <
         MIN_SQUAD_SIZE
@@ -859,7 +895,6 @@ function getSquadStatus() {
     }
 
 
-    // 16-20
     if (
         count >= MIN_SQUAD_SIZE &&
         count <= MAX_SQUAD_SIZE
@@ -1029,10 +1064,6 @@ function render() {
         }
     );
 
-
-    // =====================================================
-    // STAR BUTTON EVENTS
-    // =====================================================
 
     document
         .querySelectorAll(
@@ -1204,7 +1235,6 @@ function updateCountrySummary() {
         getShortlistedPlayers();
 
 
-    // Nothing selected
     if (
         selected.length === 0
     ) {
@@ -1334,6 +1364,19 @@ function clearFilters() {
 document.addEventListener(
     "DOMContentLoaded",
     () => {
+
+        // Theme
+        loadTheme();
+
+
+        document
+            .querySelector(
+                "#themeToggle"
+            )
+            ?.addEventListener(
+                "click",
+                toggleTheme
+            );
 
 
         // Search
