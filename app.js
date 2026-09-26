@@ -12,7 +12,7 @@ async function loadPlayers() {
 
     try {
 
-        const response = await fetch("players.csv");
+        const response = await fetch("player.csv");
 
         if (!response.ok) {
             throw new Error("CSV could not be loaded");
