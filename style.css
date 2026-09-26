@@ -1,784 +1,403 @@
-/* ---------------------------------------------------------
-   ROOT
---------------------------------------------------------- */
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-:root {
+    <title>Cricket 26 Player Shortlist</title>
 
-    --ivory: #fbf5ec;
-    --ink: #1a1714;
-    --ink-dark: #0f0d0b;
-    --charcoal: #2b2320;
-    --gold: #c9962c;
-    --muted: #7a6f68;
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    --green: #2e8b57;
-    --red: #b33a3a;
-    --yellow: #c9962c;
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
 
-    --white: #ffffff;
+    <link rel="stylesheet" href="style.css">
+</head>
 
-    --border: rgba(26, 23, 20, 0.1);
+<body>
 
-    --display-font:
-        "Cormorant Garamond",
-        Georgia,
-        serif;
+<div class="site">
 
-    --body-font:
-        "Inter",
-        system-ui,
-        -apple-system,
-        BlinkMacSystemFont,
-        "Segoe UI",
-        sans-serif;
-}
+    <!-- HEADER -->
+    <header class="site-header">
 
+        <div class="brand">
+            🏏 Cricket 26
+        </div>
 
-/* ---------------------------------------------------------
-   RESET
---------------------------------------------------------- */
+        <nav>
 
-* {
-    box-sizing: border-box;
-}
+            <button id="showAll" class="nav-button active">
+                All Players
+            </button>
 
+            <button id="showShortlist" class="nav-button">
+                ⭐ Shortlist
+            </button>
 
-body {
+            <button
+                id="themeToggle"
+                class="theme-button"
+                title="Switch theme"
+            >
+                ☀️
+            </button>
 
-    margin: 0;
+        </nav>
 
-    background: var(--ivory);
+    </header>
 
-    color: var(--charcoal);
 
-    font-family: var(--body-font);
+    <!-- MAIN -->
+    <main class="main-content">
 
-    line-height: 1.5;
-}
+        <section class="hero">
 
+            <div class="eyebrow">
+                Player Auction Helper
+            </div>
 
-/* ---------------------------------------------------------
-   SITE
---------------------------------------------------------- */
+            <h1>
+                Build Your Squad
+            </h1>
 
-.site {
+            <p class="hero-sub">
+                Select your players while keeping within your
+                budget and squad rules.
+            </p>
 
-    min-height: 100vh;
+        </section>
 
-    display: flex;
 
-    flex-direction: column;
-}
+        <!-- RULES -->
+        <section class="rules">
 
+            <div class="rule">
 
-/* ---------------------------------------------------------
-   HEADER
---------------------------------------------------------- */
+                <span class="rule-icon">💰</span>
 
-.site-header {
+                <div>
+                    <strong>100 Cr</strong>
+                    <span>Maximum Budget</span>
+                </div>
 
-    display: flex;
+            </div>
 
-    justify-content: space-between;
 
-    align-items: center;
+            <div class="rule">
 
-    padding: 1.25rem 2rem;
+                <span class="rule-icon">👥</span>
 
-    border-bottom: 1px solid var(--border);
+                <div>
+                    <strong>16–20</strong>
+                    <span>Squad Size</span>
+                </div>
 
-    background: rgba(251, 245, 236, 0.96);
+            </div>
 
-    position: sticky;
 
-    top: 0;
+            <div class="rule">
 
-    z-index: 10;
+                <span class="rule-icon">🌍</span>
 
-    backdrop-filter: blur(8px);
-}
+                <div>
+                    <strong>3 Max</strong>
+                    <span>Players Per Country</span>
+                </div>
 
+            </div>
 
-.brand {
+        </section>
 
-    font-family: var(--display-font);
 
-    font-size: 1.7rem;
+        <!-- STATS -->
+        <section class="stats-grid">
 
-    font-weight: 700;
+            <div class="stat-card">
 
-    color: var(--ink);
-}
+                <span class="stat-label">
+                    Total Players
+                </span>
 
+                <strong id="totalPlayers">
+                    0
+                </strong>
 
-.site-header nav {
+            </div>
 
-    display: flex;
 
-    gap: 0.5rem;
-}
+            <div class="stat-card">
 
+                <span class="stat-label">
+                    Shortlisted
+                </span>
 
-.nav-button {
+                <strong id="shortlistedPlayers">
+                    0
+                </strong>
 
-    border: 1px solid var(--ink);
+            </div>
 
-    background: transparent;
 
-    color: var(--ink);
+            <div class="stat-card">
 
-    padding: 0.55rem 1rem;
+                <span class="stat-label">
+                    Showing
+                </span>
 
-    border-radius: 999px;
+                <strong id="showingPlayers">
+                    0
+                </strong>
 
-    cursor: pointer;
+            </div>
 
-    font-family: var(--body-font);
 
-    font-weight: 600;
+            <div class="stat-card budget-card">
 
-    transition:
-        background 0.15s ease,
-        color 0.15s ease;
-}
+                <span class="stat-label">
+                    Budget Used
+                </span>
 
+                <strong id="budgetUsed">
+                    0 Cr
+                </strong>
 
-.nav-button:hover,
-.nav-button.active {
+            </div>
 
-    background: var(--ink);
 
-    color: var(--ivory);
-}
+            <div class="stat-card">
 
+                <span class="stat-label">
+                    Budget Remaining
+                </span>
 
-/* ---------------------------------------------------------
-   MAIN
---------------------------------------------------------- */
+                <strong id="budgetRemaining">
+                    100 Cr
+                </strong>
 
-.main-content {
+            </div>
 
-    width: min(1500px, 94%);
 
-    margin: 0 auto;
+            <div class="stat-card">
 
-    padding-bottom: 4rem;
-}
+                <span class="stat-label">
+                    Squad
+                </span>
 
+                <strong id="squadSize">
+                    0 / 20
+                </strong>
 
-/* ---------------------------------------------------------
-   HERO
---------------------------------------------------------- */
+            </div>
 
-.hero {
 
-    text-align: center;
+            <div class="stat-card squad-status-card">
 
-    padding: 3.5rem 1rem 2rem;
-}
+                <span class="stat-label">
+                    Squad Status
+                </span>
 
+                <strong
+                    id="squadStatus"
+                    class="squad-status warning"
+                >
+                    16 players minimum
+                </strong>
 
-.eyebrow {
+            </div>
 
-    text-transform: uppercase;
+        </section>
 
-    letter-spacing: 0.14em;
 
-    color: var(--gold);
+        <!-- COUNTRY COUNTS -->
+        <section class="country-section">
 
-    font-size: 0.75rem;
+            <h3>
+                Country Limits
+            </h3>
 
-    font-weight: 700;
+            <div
+                id="countrySummary"
+                class="country-summary"
+            >
+                No players selected
+            </div>
 
-    margin-bottom: 0.5rem;
-}
+        </section>
 
 
-.hero h1 {
+        <!-- FILTERS -->
+        <section class="filters">
 
-    font-family: var(--display-font);
+            <div class="search-box">
 
-    font-size: clamp(2.4rem, 5vw, 4rem);
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search player..."
+                    autocomplete="off"
+                >
 
-    line-height: 1;
+            </div>
 
-    color: var(--ink-dark);
 
-    margin: 0 0 1rem;
-}
+            <select id="roleFilter">
 
+                <option value="">
+                    All Roles
+                </option>
 
-.hero-sub {
+            </select>
 
-    max-width: 650px;
 
-    margin: 0 auto;
+            <select id="countryFilter">
 
-    color: var(--muted);
+                <option value="">
+                    All Countries
+                </option>
 
-    font-size: 1rem;
-}
+            </select>
 
 
-/* ---------------------------------------------------------
-   RULES
---------------------------------------------------------- */
+            <select id="batFilter">
 
-.rules {
+                <option value="">
+                    All Batting
+                </option>
 
-    display: grid;
+            </select>
 
-    grid-template-columns:
-        repeat(3, 1fr);
 
-    gap: 1rem;
+            <select id="bowlFilter">
 
-    margin-bottom: 1.5rem;
-}
+                <option value="">
+                    All Bowling
+                </option>
 
+            </select>
 
-.rule {
 
-    display: flex;
+            <select id="sortSelect">
 
-    align-items: center;
+                <option value="name">
+                    Name A-Z
+                </option>
 
-    gap: 0.9rem;
+                <option value="ovr-desc">
+                    OVR High → Low
+                </option>
 
-    background: var(--white);
+                <option value="ovr-asc">
+                    OVR Low → High
+                </option>
 
-    border: 1px solid var(--border);
+                <option value="price-desc">
+                    Price High → Low
+                </option>
 
-    border-radius: 12px;
+                <option value="price-asc">
+                    Price Low → High
+                </option>
 
-    padding: 1rem 1.25rem;
-}
+            </select>
 
 
-.rule-icon {
+            <button
+                id="clearFilters"
+                class="clear-button"
+            >
+                Clear Filters
+            </button>
 
-    font-size: 1.5rem;
-}
+        </section>
 
 
-.rule div {
+        <!-- TABLE -->
+        <section class="table-container">
 
-    display: flex;
+            <table>
 
-    flex-direction: column;
-}
+                <thead>
 
+                    <tr>
 
-.rule strong {
+                        <th class="star-column">
+                            ⭐
+                        </th>
 
-    color: var(--ink);
+                        <th>
+                            Player
+                        </th>
 
-    font-size: 1.1rem;
-}
+                        <th>
+                            Bat
+                        </th>
 
+                        <th>
+                            Bowl
+                        </th>
 
-.rule span:not(.rule-icon) {
+                        <th>
+                            Role
+                        </th>
 
-    color: var(--muted);
+                        <th>
+                            Country
+                        </th>
 
-    font-size: 0.8rem;
-}
+                        <th>
+                            OVR
+                        </th>
 
+                        <th>
+                            Price
+                        </th>
 
-/* ---------------------------------------------------------
-   STATS
---------------------------------------------------------- */
+                        <th>
+                            Status
+                        </th>
 
-.stats-grid {
+                    </tr>
 
-    display: grid;
+                </thead>
 
-    grid-template-columns:
-        repeat(7, 1fr);
 
-    gap: 0.75rem;
+                <tbody id="playerTableBody">
 
-    margin-bottom: 1.5rem;
-}
+                    <tr>
 
+                        <td
+                            colspan="9"
+                            class="loading"
+                        >
+                            Loading players...
+                        </td>
 
-.stat-card {
+                    </tr>
 
-    background: var(--white);
+                </tbody>
 
-    border: 1px solid var(--border);
+            </table>
 
-    border-radius: 12px;
+        </section>
 
-    padding: 1rem;
+    </main>
 
-    min-height: 95px;
 
-    display: flex;
+    <!-- FOOTER -->
+    <footer>
 
-    flex-direction: column;
+        Cricket 26 Squad Builder
 
-    justify-content: center;
-}
+    </footer>
 
+</div>
 
-.stat-label {
 
-    color: var(--muted);
+<script src="app.js"></script>
 
-    font-size: 0.72rem;
-
-    text-transform: uppercase;
-
-    letter-spacing: 0.05em;
-
-    margin-bottom: 0.25rem;
-}
-
-
-.stat-card strong {
-
-    color: var(--ink);
-
-    font-size: 1.35rem;
-}
-
-
-.squad-status {
-
-    font-size: 0.85rem !important;
-}
-
-
-.squad-status.warning {
-
-    color: var(--yellow);
-}
-
-
-.squad-status.success {
-
-    color: var(--green);
-}
-
-
-.squad-status.danger {
-
-    color: var(--red);
-}
-
-
-/* ---------------------------------------------------------
-   COUNTRY
---------------------------------------------------------- */
-
-.country-section {
-
-    background: var(--white);
-
-    border: 1px solid var(--border);
-
-    border-radius: 12px;
-
-    padding: 1rem 1.25rem;
-
-    margin-bottom: 1.5rem;
-}
-
-
-.country-section h3 {
-
-    margin: 0 0 0.75rem;
-
-    color: var(--ink);
-
-    font-size: 0.9rem;
-}
-
-
-.country-summary {
-
-    display: flex;
-
-    flex-wrap: wrap;
-
-    gap: 0.5rem;
-}
-
-
-.country-count {
-
-    padding: 0.4rem 0.75rem;
-
-    border-radius: 999px;
-
-    background: rgba(201, 150, 44, 0.12);
-
-    color: var(--charcoal);
-
-    font-size: 0.78rem;
-
-    font-weight: 600;
-}
-
-
-.country-count.full {
-
-    background: rgba(179, 58, 58, 0.12);
-
-    color: var(--red);
-}
-
-
-.country-empty {
-
-    color: var(--muted);
-
-    font-size: 0.8rem;
-}
-
-
-/* ---------------------------------------------------------
-   FILTERS
---------------------------------------------------------- */
-
-.filters {
-
-    display: grid;
-
-    grid-template-columns:
-        2fr
-        1fr
-        1fr
-        1fr
-        1fr
-        auto;
-
-    gap: 0.75rem;
-
-    margin-bottom: 1.25rem;
-}
-
-
-.search-box input,
-.filters select {
-
-    width: 100%;
-
-    height: 44px;
-
-    padding: 0 0.85rem;
-
-    border: 1px solid rgba(26, 23, 20, 0.18);
-
-    border-radius: 8px;
-
-    background: var(--white);
-
-    color: var(--ink);
-
-    font-family: var(--body-font);
-
-    font-size: 0.85rem;
-}
-
-
-.search-box input:focus,
-.filters select:focus {
-
-    outline: none;
-
-    border-color: var(--gold);
-}
-
-
-.clear-button {
-
-    height: 44px;
-
-    padding: 0 1rem;
-
-    border: 1px solid var(--ink);
-
-    border-radius: 8px;
-
-    background: transparent;
-
-    color: var(--ink);
-
-    font-family: var(--body-font);
-
-    font-weight: 600;
-
-    cursor: pointer;
-
-    white-space: nowrap;
-}
-
-
-.clear-button:hover {
-
-    background: var(--ink);
-
-    color: var(--ivory);
-}
-
-
-/* ---------------------------------------------------------
-   TABLE
---------------------------------------------------------- */
-
-.table-container {
-
-    background: var(--white);
-
-    border: 1px solid var(--border);
-
-    border-radius: 12px;
-
-    overflow-x: auto;
-}
-
-
-table {
-
-    width: 100%;
-
-    border-collapse: collapse;
-
-    min-width: 900px;
-}
-
-
-thead {
-
-    background: var(--ink);
-
-    color: var(--ivory);
-}
-
-
-th {
-
-    text-align: left;
-
-    padding: 0.85rem 0.75rem;
-
-    font-size: 0.72rem;
-
-    text-transform: uppercase;
-
-    letter-spacing: 0.05em;
-
-    white-space: nowrap;
-}
-
-
-td {
-
-    padding: 0.75rem;
-
-    border-bottom: 1px solid rgba(26, 23, 20, 0.07);
-
-    font-size: 0.85rem;
-
-    white-space: nowrap;
-}
-
-
-tbody tr:hover {
-
-    background: rgba(201, 150, 44, 0.05);
-}
-
-
-tbody tr:last-child td {
-
-    border-bottom: none;
-}
-
-
-.star-column {
-
-    width: 55px;
-
-    text-align: center;
-}
-
-
-.star-button {
-
-    border: none;
-
-    background: transparent;
-
-    color: #b5aaa3;
-
-    font-size: 1.3rem;
-
-    cursor: pointer;
-
-    padding: 0.25rem;
-
-    transition:
-        transform 0.1s ease,
-        color 0.1s ease;
-}
-
-
-.star-button:hover {
-
-    transform: scale(1.15);
-
-    color: var(--gold);
-}
-
-
-.star-button.selected {
-
-    color: var(--gold);
-}
-
-
-td strong {
-
-    color: var(--ink);
-}
-
-
-.loading,
-.error {
-
-    text-align: center;
-
-    padding: 3rem;
-
-    color: var(--muted);
-}
-
-
-.error {
-
-    color: var(--red);
-}
-
-
-/* ---------------------------------------------------------
-   FOOTER
---------------------------------------------------------- */
-
-footer {
-
-    margin-top: auto;
-
-    border-top: 1px solid var(--border);
-
-    padding: 1.5rem;
-
-    text-align: center;
-
-    color: var(--muted);
-
-    font-size: 0.75rem;
-}
-
-
-/* ---------------------------------------------------------
-   MOBILE
---------------------------------------------------------- */
-
-@media (max-width: 1100px) {
-
-    .stats-grid {
-
-        grid-template-columns:
-            repeat(4, 1fr);
-    }
-
-
-    .filters {
-
-        grid-template-columns:
-            repeat(3, 1fr);
-    }
-
-}
-
-
-@media (max-width: 750px) {
-
-    .site-header {
-
-        padding: 1rem;
-    }
-
-
-    .brand {
-
-        font-size: 1.4rem;
-    }
-
-
-    .main-content {
-
-        width: 94%;
-    }
-
-
-    .hero {
-
-        padding-top: 2.5rem;
-    }
-
-
-    .rules {
-
-        grid-template-columns: 1fr;
-    }
-
-
-    .stats-grid {
-
-        grid-template-columns:
-            repeat(2, 1fr);
-    }
-
-
-    .filters {
-
-        grid-template-columns: 1fr;
-    }
-
-
-    .site-header nav {
-
-        gap: 0.25rem;
-    }
-
-
-    .nav-button {
-
-        padding:
-            0.45rem
-            0.65rem;
-
-        font-size: 0.75rem;
-    }
-
-}
-
-
-@media (max-width: 450px) {
-
-    .stats-grid {
-
-        grid-template-columns: 1fr;
-    }
-
-
-    .hero h1 {
-
-        font-size: 2.5rem;
-    }
-
-}
+</body>
+</html>
