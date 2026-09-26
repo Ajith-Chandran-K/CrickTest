@@ -3,119 +3,361 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cricket 26 - Player Shortlist</title>
+
+    <title>Cricket 26 Player Shortlist</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap"
+        rel="stylesheet"
+    >
+
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
-<header>
-    <div>
-        <h1>🏏 Cricket 26</h1>
-        <p>Player Shortlist</p>
-    </div>
+<div class="site">
 
-    <div class="header-actions">
-        <button id="showAllBtn" class="active">All Players</button>
-        <button id="showShortlistBtn">⭐ Shortlist</button>
-    </div>
-</header>
+    <!-- HEADER -->
+    <header class="site-header">
 
-<main>
-
-    <!-- Stats -->
-    <section class="stats">
-        <div class="stat-card">
-            <span>Total Players</span>
-            <strong id="totalPlayers">0</strong>
+        <div class="brand">
+            🏏 Cricket 26
         </div>
 
-        <div class="stat-card">
-            <span>Shortlisted</span>
-            <strong id="shortlistCount">0</strong>
-        </div>
+        <nav>
+            <button id="showAll" class="nav-button active">
+                All Players
+            </button>
 
-        <div class="stat-card">
-            <span>Showing</span>
-            <strong id="showingCount">0</strong>
-        </div>
-    </section>
+            <button id="showShortlist" class="nav-button">
+                ⭐ Shortlist
+            </button>
+        </nav>
 
-    <!-- Controls -->
-    <section class="controls">
+    </header>
 
-        <input
-            type="text"
-            id="searchInput"
-            placeholder="Search player..."
-        >
 
-        <select id="roleFilter">
-            <option value="">All Roles</option>
-        </select>
+    <!-- MAIN -->
+    <main class="main-content">
 
-        <select id="countryFilter">
-            <option value="">All Countries</option>
-        </select>
+        <section class="hero">
 
-        <select id="batFilter">
-            <option value="">All Bat Hands</option>
-        </select>
+            <div class="eyebrow">
+                Player Auction Helper
+            </div>
 
-        <select id="bowlFilter">
-            <option value="">All Bowl Styles</option>
-        </select>
+            <h1>
+                Build Your Squad
+            </h1>
 
-        <select id="sortSelect">
-            <option value="name">Name</option>
-            <option value="ovrHigh">OVR: High → Low</option>
-            <option value="ovrLow">OVR: Low → High</option>
-            <option value="priceHigh">Price: High → Low</option>
-            <option value="priceLow">Price: Low → High</option>
-        </select>
+            <p class="hero-sub">
+                Select your players while keeping within your
+                budget and squad rules.
+            </p>
 
-        <button id="clearFiltersBtn">
-            Clear Filters
-        </button>
+        </section>
 
-    </section>
 
-    <!-- Player table -->
-    <section class="table-container">
+        <!-- RULES -->
+        <section class="rules">
 
-        <table>
-            <thead>
-                <tr>
-                    <th>⭐</th>
-                    <th>Player</th>
-                    <th>Bat</th>
-                    <th>Bowl</th>
-                    <th>Role</th>
-                    <th>Country</th>
-                    <th>OVR</th>
-                    <th>Price</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
+            <div class="rule">
+                <span class="rule-icon">💰</span>
 
-            <tbody id="playerTable">
-            </tbody>
-        </table>
+                <div>
+                    <strong>100 Cr</strong>
+                    <span>Maximum Budget</span>
+                </div>
+            </div>
 
-        <div id="loading" class="message">
-            Loading players...
-        </div>
+            <div class="rule">
+                <span class="rule-icon">👥</span>
 
-        <div id="error" class="message error hidden">
-            Could not load players.csv
-        </div>
+                <div>
+                    <strong>16–20</strong>
+                    <span>Squad Size</span>
+                </div>
+            </div>
 
-        <div id="noResults" class="message hidden">
-            No players found.
-        </div>
+            <div class="rule">
+                <span class="rule-icon">🌍</span>
 
-    </section>
+                <div>
+                    <strong>3 Max</strong>
+                    <span>Players Per Country</span>
+                </div>
+            </div>
 
-</main>
+        </section>
+
+
+        <!-- STATS -->
+        <section class="stats-grid">
+
+            <div class="stat-card">
+                <span class="stat-label">
+                    Total Players
+                </span>
+
+                <strong id="totalPlayers">
+                    0
+                </strong>
+            </div>
+
+
+            <div class="stat-card">
+                <span class="stat-label">
+                    Shortlisted
+                </span>
+
+                <strong id="shortlistedPlayers">
+                    0
+                </strong>
+            </div>
+
+
+            <div class="stat-card">
+                <span class="stat-label">
+                    Showing
+                </span>
+
+                <strong id="showingPlayers">
+                    0
+                </strong>
+            </div>
+
+
+            <div class="stat-card budget-card">
+                <span class="stat-label">
+                    Budget Used
+                </span>
+
+                <strong id="budgetUsed">
+                    0 Cr
+                </strong>
+            </div>
+
+
+            <div class="stat-card">
+                <span class="stat-label">
+                    Budget Remaining
+                </span>
+
+                <strong id="budgetRemaining">
+                    100 Cr
+                </strong>
+            </div>
+
+
+            <div class="stat-card">
+                <span class="stat-label">
+                    Squad
+                </span>
+
+                <strong id="squadSize">
+                    0 / 20
+                </strong>
+            </div>
+
+
+            <div class="stat-card squad-status-card">
+
+                <span class="stat-label">
+                    Squad Status
+                </span>
+
+                <strong
+                    id="squadStatus"
+                    class="squad-status warning"
+                >
+                    16 players minimum
+                </strong>
+
+            </div>
+
+        </section>
+
+
+        <!-- COUNTRY COUNTS -->
+        <section class="country-section">
+
+            <h3>
+                Country Limits
+            </h3>
+
+            <div
+                id="countrySummary"
+                class="country-summary"
+            >
+                No players selected
+            </div>
+
+        </section>
+
+
+        <!-- FILTERS -->
+        <section class="filters">
+
+            <div class="search-box">
+
+                <input
+                    type="text"
+                    id="searchInput"
+                    placeholder="Search player..."
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+            <select id="roleFilter">
+                <option value="">
+                    All Roles
+                </option>
+            </select>
+
+
+            <select id="countryFilter">
+                <option value="">
+                    All Countries
+                </option>
+            </select>
+
+
+            <select id="batFilter">
+                <option value="">
+                    All Batting
+                </option>
+            </select>
+
+
+            <select id="bowlFilter">
+                <option value="">
+                    All Bowling
+                </option>
+            </select>
+
+
+            <select id="sortSelect">
+
+                <option value="name">
+                    Name A-Z
+                </option>
+
+                <option value="ovr-desc">
+                    OVR High → Low
+                </option>
+
+                <option value="ovr-asc">
+                    OVR Low → High
+                </option>
+
+                <option value="price-desc">
+                    Price High → Low
+                </option>
+
+                <option value="price-asc">
+                    Price Low → High
+                </option>
+
+            </select>
+
+
+            <button
+                id="clearFilters"
+                class="clear-button"
+            >
+                Clear Filters
+            </button>
+
+        </section>
+
+
+        <!-- TABLE -->
+        <section class="table-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+
+                        <th class="star-column">
+                            ⭐
+                        </th>
+
+                        <th>
+                            Player
+                        </th>
+
+                        <th>
+                            Bat
+                        </th>
+
+                        <th>
+                            Bowl
+                        </th>
+
+                        <th>
+                            Role
+                        </th>
+
+                        <th>
+                            Country
+                        </th>
+
+                        <th>
+                            OVR
+                        </th>
+
+                        <th>
+                            Price
+                        </th>
+
+                        <th>
+                            Status
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+
+                <tbody id="playerTableBody">
+
+                    <tr>
+
+                        <td
+                            colspan="9"
+                            class="loading"
+                        >
+                            Loading players...
+                        </td>
+
+                    </tr>
+
+                </tbody>
+
+            </table>
+
+        </section>
+
+    </main>
+
+
+    <!-- FOOTER -->
+    <footer>
+
+        Cricket 26 Squad Builder
+
+    </footer>
+
+</div>
+
 
 <script src="app.js"></script>
 
