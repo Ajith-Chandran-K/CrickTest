@@ -9,29 +9,25 @@ let showingShortlistOnly = false;
 // ==========================================
 
 async function loadPlayers() {
-
     try {
-
-        const response = await fetch("player.csv");
+        const response = await fetch("./players.csv");
 
         if (!response.ok) {
-            throw new Error("CSV could not be loaded");
+            throw new Error("Could not load players.csv");
         }
 
         const csvText = await response.text();
 
-        players = parseCSV(csvText);
+        players = parsePlayerCSV(csvText);
 
         loadSavedShortlist();
 
         populateFilters();
-
         renderPlayers();
 
         document.getElementById("loading").classList.add("hidden");
 
     } catch (error) {
-
         console.error(error);
 
         document.getElementById("loading").classList.add("hidden");
@@ -41,11 +37,57 @@ async function loadPlayers() {
 
 
 // ==========================================
-// CSV PARSER
-// Handles commas inside quotes too
+// PARSE YOUR CSV
+//
+// Your CSV has:
+// Row 1 = Player + team/owner names
+// Row 2 = Budget
+// Row 3 = actual player headers
+// Row 4+ = player data
 // ==========================================
 
-function parseCSV(text) {
+function parsePlayerCSV(text) {
+
+    const rows = parseCSVRows(text);
+
+    if (rows.length < 4) {
+        return [];
+    }
+
+    // Your actual player header is row 3
+    const headers = rows[2].map(header =>
+        header.trim()
+    );
+
+    const playerRows = rows.slice(3);
+
+    return playerRows
+        .filter(row => row.length > 0 && row[0])
+        .map(row => {
+
+            const player = {};
+
+            // We only need the first 8 player columns
+            player.playername = row[0] || "";
+            player.bathand = row[1] || "";
+            player.bowlstyle = row[2] || "";
+            player.role = row[3] || "";
+            player.country = row[4] || "";
+            player.ovr = row[5] || "";
+            player.price = row[6] || "";
+            player.status = row[7] || "";
+
+            return player;
+        });
+}
+
+
+// ==========================================
+// CSV PARSER
+// Handles commas inside quotes
+// ==========================================
+
+function parseCSVRows(text) {
 
     const rows = [];
     let row = [];
@@ -71,7 +113,10 @@ function parseCSV(text) {
             row.push(value.trim());
             value = "";
 
-        } else if ((char === "\n" || char === "\r") && !insideQuotes) {
+        } else if (
+            (char === "\n" || char === "\r") &&
+            !insideQuotes
+        ) {
 
             if (char === "\r" && next === "\n") {
                 i++;
@@ -79,7 +124,7 @@ function parseCSV(text) {
 
             row.push(value.trim());
 
-            if (row.some(x => x !== "")) {
+            if (row.some(value => value !== "")) {
                 rows.push(row);
             }
 
@@ -96,97 +141,54 @@ function parseCSV(text) {
 
         row.push(value.trim());
 
-        if (row.some(x => x !== "")) {
+        if (row.some(value => value !== "")) {
             rows.push(row);
         }
     }
 
-    if (rows.length === 0) {
-        return [];
-    }
-
-    const headers = rows[0].map(normalizeHeader);
-
-    return rows.slice(1).map(row => {
-
-        const player = {};
-
-        headers.forEach((header, index) => {
-            player[header] = row[index] || "";
-        });
-
-        return player;
-    });
+    return rows;
 }
 
 
 // ==========================================
-// NORMALIZE COLUMN NAMES
-// ==========================================
-
-function normalizeHeader(header) {
-
-    return header
-        .trim()
-        .toLowerCase()
-        .replace(/[^a-z0-9]/g, "");
-}
-
-
-// ==========================================
-// GET PLAYER VALUES
+// PLAYER VALUES
 // ==========================================
 
 function getPlayerName(player) {
-
-    return player.playername ||
-           player.name ||
-           player.player ||
-           "Unknown";
+    return player.playername;
 }
 
 function getBatHand(player) {
-
-    return player.bathand ||
-           player.battinghand ||
-           "";
+    return player.bathand;
 }
 
 function getBowlStyle(player) {
-
-    return player.bowlstyle ||
-           player.bowlingstyle ||
-           "";
+    return player.bowlstyle;
 }
 
 function getRole(player) {
-
-    return player.role || "";
+    return player.role;
 }
 
 function getCountry(player) {
-
-    return player.country || "";
+    return player.country;
 }
 
 function getOVR(player) {
-
-    return player.ovr || "";
+    return player.ovr;
 }
 
 function getPrice(player) {
-
-    return player.price || "";
+    return player.price;
 }
 
 function getStatus(player) {
-
-    return player.status || "";
+    return player.status;
 }
 
 
 // ==========================================
-// FILTER DROPDOWNS
+// FILTERS
 // ==========================================
 
 function populateFilters() {
@@ -217,11 +219,13 @@ function populateSelect(id, values) {
 
     const select = document.getElementById(id);
 
-    const uniqueValues = [...new Set(
-        values
-            .filter(value => value)
-            .sort()
-    )];
+    const uniqueValues = [
+        ...new Set(
+            values
+                .filter(value => value)
+                .sort()
+        )
+    ];
 
     uniqueValues.forEach(value => {
 
@@ -266,7 +270,9 @@ function renderPlayers() {
 
     let filtered = players.filter(player => {
 
-        const name = getPlayerName(player).toLowerCase();
+        const name =
+            getPlayerName(player)
+                .toLowerCase();
 
         if (
             search &&
@@ -321,29 +327,28 @@ function renderPlayers() {
     filtered.sort((a, b) => {
 
         if (sort === "name") {
-
             return getPlayerName(a)
                 .localeCompare(getPlayerName(b));
         }
 
         if (sort === "ovrHigh") {
-
-            return Number(getOVR(b)) - Number(getOVR(a));
+            return Number(getOVR(b))
+                - Number(getOVR(a));
         }
 
         if (sort === "ovrLow") {
-
-            return Number(getOVR(a)) - Number(getOVR(b));
+            return Number(getOVR(a))
+                - Number(getOVR(b));
         }
 
         if (sort === "priceHigh") {
-
-            return Number(getPrice(b)) - Number(getPrice(a));
+            return Number(getPrice(b))
+                - Number(getPrice(a));
         }
 
         if (sort === "priceLow") {
-
-            return Number(getPrice(a)) - Number(getPrice(b));
+            return Number(getPrice(a))
+                - Number(getPrice(b));
         }
 
         return 0;
@@ -355,10 +360,6 @@ function renderPlayers() {
 
     table.innerHTML = "";
 
-
-    // ======================================
-    // NO RESULTS
-    // ======================================
 
     document
         .getElementById("noResults")
@@ -379,16 +380,28 @@ function renderPlayers() {
         const isShortlisted =
             shortlist.has(name);
 
-        const row = document.createElement("tr");
+        const row =
+            document.createElement("tr");
+
 
         row.innerHTML = `
 
             <td>
                 <span
-                    class="star ${isShortlisted ? "shortlisted" : ""}"
-                    onclick="toggleShortlist('${escapeForHTML(name)}')"
+                    class="star ${
+                        isShortlisted
+                            ? "shortlisted"
+                            : ""
+                    }"
+                    onclick="toggleShortlist(
+                        '${escapeForHTML(name)}'
+                    )"
                 >
-                    ${isShortlisted ? "★" : "☆"}
+                    ${
+                        isShortlisted
+                            ? "★"
+                            : "☆"
+                    }
                 </span>
             </td>
 
@@ -399,40 +412,56 @@ function renderPlayers() {
             </td>
 
             <td>
-                ${escapeForHTML(getBatHand(player))}
+                ${escapeForHTML(
+                    getBatHand(player)
+                )}
             </td>
 
             <td>
-                ${escapeForHTML(getBowlStyle(player))}
+                ${escapeForHTML(
+                    getBowlStyle(player)
+                )}
             </td>
 
             <td>
-                ${escapeForHTML(getRole(player))}
+                ${escapeForHTML(
+                    getRole(player)
+                )}
             </td>
 
             <td>
-                ${escapeForHTML(getCountry(player))}
+                ${escapeForHTML(
+                    getCountry(player)
+                )}
             </td>
 
             <td>
                 <span class="ovr">
-                    ${escapeForHTML(getOVR(player))}
+                    ${escapeForHTML(
+                        getOVR(player)
+                    )}
                 </span>
             </td>
 
             <td>
                 <span class="price">
-                    ${escapeForHTML(getPrice(player))}
+                    ${escapeForHTML(
+                        getPrice(player)
+                    )} Cr
                 </span>
             </td>
 
             <td>
                 <span class="status ${
-                    getStatus(player).toLowerCase() === "available"
+                    getStatus(player)
+                        .toLowerCase()
+                        === "available"
                         ? "available"
                         : "unavailable"
                 }">
-                    ${escapeForHTML(getStatus(player))}
+                    ${escapeForHTML(
+                        getStatus(player)
+                    )}
                 </span>
             </td>
         `;
@@ -452,11 +481,8 @@ function renderPlayers() {
 function toggleShortlist(name) {
 
     if (shortlist.has(name)) {
-
         shortlist.delete(name);
-
     } else {
-
         shortlist.add(name);
     }
 
@@ -470,7 +496,9 @@ function saveShortlist() {
 
     localStorage.setItem(
         "cricket26_shortlist",
-        JSON.stringify([...shortlist])
+        JSON.stringify(
+            [...shortlist]
+        )
     );
 }
 
@@ -488,9 +516,10 @@ function loadSavedShortlist() {
 
     try {
 
-        const names = JSON.parse(saved);
-
-        shortlist = new Set(names);
+        shortlist =
+            new Set(
+                JSON.parse(saved)
+            );
 
     } catch {
 
@@ -522,24 +551,30 @@ function updateStats(showing) {
 
 function clearFilters() {
 
-    document.getElementById("searchInput").value = "";
+    document.getElementById("searchInput")
+        .value = "";
 
-    document.getElementById("roleFilter").value = "";
+    document.getElementById("roleFilter")
+        .value = "";
 
-    document.getElementById("countryFilter").value = "";
+    document.getElementById("countryFilter")
+        .value = "";
 
-    document.getElementById("batFilter").value = "";
+    document.getElementById("batFilter")
+        .value = "";
 
-    document.getElementById("bowlFilter").value = "";
+    document.getElementById("bowlFilter")
+        .value = "";
 
-    document.getElementById("sortSelect").value = "name";
+    document.getElementById("sortSelect")
+        .value = "name";
 
     renderPlayers();
 }
 
 
 // ==========================================
-// ALL / SHORTLIST BUTTONS
+// ALL / SHORTLIST
 // ==========================================
 
 function showAll() {
@@ -575,7 +610,7 @@ function showShortlist() {
 
 
 // ==========================================
-// SECURITY / HTML ESCAPE
+// HTML ESCAPE
 // ==========================================
 
 function escapeForHTML(value) {
@@ -595,39 +630,66 @@ function escapeForHTML(value) {
 
 document
     .getElementById("searchInput")
-    .addEventListener("input", renderPlayers);
+    .addEventListener(
+        "input",
+        renderPlayers
+    );
 
 document
     .getElementById("roleFilter")
-    .addEventListener("change", renderPlayers);
+    .addEventListener(
+        "change",
+        renderPlayers
+    );
 
 document
     .getElementById("countryFilter")
-    .addEventListener("change", renderPlayers);
+    .addEventListener(
+        "change",
+        renderPlayers
+    );
 
 document
     .getElementById("batFilter")
-    .addEventListener("change", renderPlayers);
+    .addEventListener(
+        "change",
+        renderPlayers
+    );
 
 document
     .getElementById("bowlFilter")
-    .addEventListener("change", renderPlayers);
+    .addEventListener(
+        "change",
+        renderPlayers
+    );
 
 document
     .getElementById("sortSelect")
-    .addEventListener("change", renderPlayers);
+    .addEventListener(
+        "change",
+        renderPlayers
+    );
 
 document
     .getElementById("clearFiltersBtn")
-    .addEventListener("click", clearFilters);
+    .addEventListener(
+        "click",
+        clearFilters
+    );
 
 document
     .getElementById("showAllBtn")
-    .addEventListener("click", showAll);
+    .addEventListener(
+        "click",
+        showAll
+    );
 
 document
     .getElementById("showShortlistBtn")
-    .addEventListener("click", showShortlist);
+    .addEventListener(
+        "click",
+        showShortlist
+    );
 
 
 // ==========================================
