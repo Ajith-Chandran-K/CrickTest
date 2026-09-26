@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cricket 26 - Player Shortlist</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+    <div>
+        <h1>🏏 Cricket 26</h1>
+        <p>Player Shortlist</p>
+    </div>
+
+    <div class="header-actions">
+        <button id="showAllBtn" class="active">All Players</button>
+        <button id="showShortlistBtn">⭐ Shortlist</button>
+    </div>
+</header>
+
+<main>
+
+    <!-- Stats -->
+    <section class="stats">
+        <div class="stat-card">
+            <span>Total Players</span>
+            <strong id="totalPlayers">0</strong>
+        </div>
+
+        <div class="stat-card">
+            <span>Shortlisted</span>
+            <strong id="shortlistCount">0</strong>
+        </div>
+
+        <div class="stat-card">
+            <span>Showing</span>
+            <strong id="showingCount">0</strong>
+        </div>
+    </section>
+
+    <!-- Controls -->
+    <section class="controls">
+
+        <input
+            type="text"
+            id="searchInput"
+            placeholder="Search player..."
+        >
+
+        <select id="roleFilter">
+            <option value="">All Roles</option>
+        </select>
+
+        <select id="countryFilter">
+            <option value="">All Countries</option>
+        </select>
+
+        <select id="batFilter">
+            <option value="">All Bat Hands</option>
+        </select>
+
+        <select id="bowlFilter">
+            <option value="">All Bowl Styles</option>
+        </select>
+
+        <select id="sortSelect">
+            <option value="name">Name</option>
+            <option value="ovrHigh">OVR: High → Low</option>
+            <option value="ovrLow">OVR: Low → High</option>
+            <option value="priceHigh">Price: High → Low</option>
+            <option value="priceLow">Price: Low → High</option>
+        </select>
+
+        <button id="clearFiltersBtn">
+            Clear Filters
+        </button>
+
+    </section>
+
+    <!-- Player table -->
+    <section class="table-container">
+
+        <table>
+            <thead>
+                <tr>
+                    <th>⭐</th>
+                    <th>Player</th>
+                    <th>Bat</th>
+                    <th>Bowl</th>
+                    <th>Role</th>
+                    <th>Country</th>
+                    <th>OVR</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody id="playerTable">
+            </tbody>
+        </table>
+
+        <div id="loading" class="message">
+            Loading players...
+        </div>
+
+        <div id="error" class="message error hidden">
+            Could not load players.csv
+        </div>
+
+        <div id="noResults" class="message hidden">
+            No players found.
+        </div>
+
+    </section>
+
+</main>
+
+<script src="app.js"></script>
+
+</body>
+</html>
